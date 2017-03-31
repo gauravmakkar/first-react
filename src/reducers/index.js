@@ -7,7 +7,7 @@ import { DashboardReducers } from './dashboard';
 //Add the list of reducers in combineReducers method
 
 const rootReducer = combineReducers({
-    DashboardReducers
+    dashboard:DashboardReducers
 })
 
 export default rootReducer

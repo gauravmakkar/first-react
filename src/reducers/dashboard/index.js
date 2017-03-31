@@ -3,7 +3,7 @@
  */
 
 import {FETCH_WIDGETS} from '../../constants/actionConstants'
-const initialDashboardState = {widgets: []}
+const initialDashboardState = {widgets: [{name:"1"},{name:"2"}]}
 export function DashboardReducers(state = initialDashboardState, action) {
 
     switch (action.type) {
