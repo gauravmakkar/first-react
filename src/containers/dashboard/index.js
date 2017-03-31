@@ -2,7 +2,7 @@
  * Created by gaurav.m on 3/31/17.
  */
 import React, {Component} from 'react';
-import './Dashboard.css';
+import './dashboard.css';
 
 class DashboardContainer extends Component {
     render() {
