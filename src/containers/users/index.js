@@ -1,29 +1,31 @@
 /**
  * Created by gaurav.m on 4/3/17.
  */
-import React, {Component,PropTypes} from 'react';
+import React, {Component, PropTypes} from 'react';
 import './users.css';
 import {connect} from 'react-redux'
 import {fetchUserList} from '../../actions/users';
 import {setWsAction} from '../../actions/socket';
 import {WS_CONNECT, WS_ONSEND} from '../../constants/actionConstants';
 import {userSubscriber} from './subscribe'
-import { browserHistory } from 'react-router';
+import {browserHistory} from 'react-router';
 
 class UsersContainer extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
-        this.state={filter:props.location.query}
-        this.filterUserList=this.filterUserList.bind(this)
+        this.state = {filter: props.location.query}
+        this.filterUserList = this.filterUserList.bind(this)
+        this.handleOnChangeSearchBox = this.handleOnChangeSearchBox.bind(this)
     }
+
     componentWillMount() {
-        console.log(this.props.location.query)
+        this.setState({username:this.state.filter.username||''})
         if (!this.props.socket.connected) {
             console.log("Connecting to socket...")
             this.props.initWebSocket()
         }
-
     }
+
 
     componentWillReceiveProps(nextProps) {
         console.log("CALLED")
@@ -40,59 +42,71 @@ class UsersContainer extends Component {
 
         if (nextProps.socket.connected && nextProps.socket.authenticated && !nextProps.socket.subscribed) {
             console.log("Subscribing User Data")
-            let filteredUserSubsriberData=userSubscriber["users"]
-            if(this.state.filter && this.state.filter.username){
-                filteredUserSubsriberData.data[0].details["filter_params"]={'user_name':['contains',this.state.filter.username]}
+            let filteredUserSubsriberData = userSubscriber["users"]
+            if (this.state.filter && this.state.filter.username) {
+                filteredUserSubsriberData.data[0].details["filter_params"] = {'user_name': ['contains', this.state.filter.username]}
             }
             this.props.initDataSentCall(filteredUserSubsriberData);
         }
 
-        if(nextProps.location.query && this.state.filter && nextProps.location.query.username!==this.state.filter.username){
-            let filteredUserSubsriberData=userSubscriber["users"]
-            if(nextProps.location.query.username){
-                filteredUserSubsriberData.data[0].details["filter_params"]={'user_name':['contains',nextProps.location.query.username]}
-                 this.setState({filter:nextProps.location.query})
+        if (nextProps.location.query && this.state.filter && nextProps.location.query.username !== this.state.filter.username) {
+            let filteredUserSubsriberData = userSubscriber["users"]
+            if (nextProps.location.query.username) {
+                filteredUserSubsriberData.data[0].details["filter_params"] = {'user_name': ['contains', nextProps.location.query.username]}
+                this.setState({filter: nextProps.location.query})
+            }else{
+                filteredUserSubsriberData.data[0].details["filter_params"] = {'user_name': ['contains', ""]}
+                this.setState({filter: {username:""}})
             }
             this.props.initDataSentCall(filteredUserSubsriberData);
 
         }
     }
-    filterUserList(event){
 
-        if (event.keyCode=== 13){
-            this.context.router.push("users?username="+event.target.value)
+    filterUserList(event) {
+
+        if (event.keyCode === 13) {
+                this.context.router.push("users?username=" + event.target.value)
+
         }
+    }
+
+    handleOnChangeSearchBox(event) {
+        this.setState({username: event.target.value})
     }
 
     render() {
         return (
             <div className="settingsContainer">
                 <div className="header">
-                    <div style={{width:'50%','float':'left'}}>
+                    <div style={{float:'left',clear:'both'}}>
                         <h2>Users</h2>
                     </div>
-                    <div style={{width:'50%',float:'right'}}>
-                        <input  type="text" placeholder="Search user" onKeyDown={this.filterUserList}/>
+                    <div style={{float:'right',marginTop:'10px'}}>
+                        <input className="usernameSearchInput" onChange={this.handleOnChangeSearchBox} value={this.props.username} type="text" placeholder="Search by username"
+                               onKeyDown={this.filterUserList}/>
                     </div>
                 </div>
 
-                <table style={{'width':'100%'}}>
+                <table style={{'width': '100%'}}>
                     <thead>
                     <tr>
+                        <th>Username</th>
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Role</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {this.props.users?this.props.users.map(function (user,index) {
+                    {this.props.users ? this.props.users.map(function (user, index) {
                         return ( <tr key={index}>
+                            <td>{user.user_name}</td>
                             <td>{user.first_name}</td>
                             <td>{user.last_name}</td>
                             <td>{user.role}</td>
                         </tr>)
-                    }):<tr>
-                        <td  colSpan={'3'}>Loading...</td>
+                    }) : <tr>
+                        <td colSpan={'4'}>Loading...</td>
                     </tr>}
                     </tbody>
                 </table>
@@ -111,7 +125,7 @@ function mapStateToProps(state, ownProps) {
     return {
         users: state.users.receivedList,
         socket: state.socket,
-        filter:ownProps.location.query
+        filter: state.username
     }
 }
 
