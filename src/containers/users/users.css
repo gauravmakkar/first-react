@@ -1,0 +1,22 @@
+table{
+    width: 100%;
+    border: 1px solid black;
+}
+table td{
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+table thead{
+    border-bottom: 2px solid black;
+}
+
+.header{
+    padding: 20px;
+    text-align: center;
+}
+
+.settingsContainer{
+    padding-left: 15px;
+    padding-right: 15px;
+}

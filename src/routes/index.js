@@ -39,6 +39,13 @@ export default class Routes extends React.Component {
                            }, "settings");
                        }}
                 />
+                <Route name="users" path="/users"
+                       getComponent={(location, callback) => {
+                           require.ensure([], function (require) {
+                               callback(null, require('../containers/users').default);
+                           }, "users");
+                       }}
+                />
 
             </Router>
         )
