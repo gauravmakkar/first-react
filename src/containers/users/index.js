@@ -16,23 +16,29 @@ class UsersContainer extends Component {
         this.state = {filter: props.location.query}
         this.filterUserList = this.filterUserList.bind(this)
         this.handleOnChangeSearchBox = this.handleOnChangeSearchBox.bind(this)
+        this.textInput=null
     }
 
-    componentWillMount() {
+
+    componentDidMount(){
         this.setState({username:this.state.filter.username||''})
         if (!this.props.socket.connected) {
             console.log("Connecting to socket...")
             this.props.initWebSocket()
         }
+        this.textInput.value=this.state.filter.username||""
+    }
+
+    componentDidUpdate(){
+        console.log("COMPONENT UPDATED")
     }
 
 
     componentWillReceiveProps(nextProps) {
-        console.log("CALLED")
         let authenticationSocketData = {
             'type': 'auth',
             'data': {
-                "auth_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5OTksInVzZXJfbmFtZSI6ImFkbWluIiwic2NvcGUiOlsib3BlbmlkIl0sImV4cCI6MTQ5MTMyNjYxNSwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiJdLCJqdGkiOiJlNzU2ODY5MS1jYTU4LTQ1NzItOTEyMy00YWVjYjVhYzU0MzciLCJjbGllbnRfaWQiOiJ3bXMifQ.DnRNsyKuzgua6OHIavp25ARcH7kg8_ypRyqRC91xziPaj92L2fYbXaQ-C8pY067B2Mj67W7KG04tLXqVlP1ax-srbNLrJSEupOeTSKMTgh1hlhm3YbYfkQwXlsIy8iKq6ylA68w9Ckhs9DPV2-FNtraP71DCxBFn9PW3Y3gNoT4yCJngxGfL3Lal7NqMJAwIZv9jcZ_QpiLUSDom4eNs3NLtxIQf_aG9Jm4Tm5U60whCRgaw9bNSzifA_yluRgAQXnZ1foVpGUhPH1fOgowXbpMODHQSeliTV4IgCJMqExAJetu6f4vXVaB2QI-5brA-rDqxi2n0FubbnJlW4Ah3Hw"
+                "auth_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5OTksInVzZXJfbmFtZSI6ImFkbWluIiwic2NvcGUiOlsib3BlbmlkIl0sImV4cCI6MTQ5MTM0NDQ3MywiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiJdLCJqdGkiOiJkNTI2MmQxYi1iOTU3LTRlNWUtOGZkZS05ZmY4MTcyNzc1ZmEiLCJjbGllbnRfaWQiOiJ3bXMifQ.aA5ET1kZkQTA6V-Y4dzTKgodhD6-h7ZaGQKZIMHtB2XXik-UsFe84RpdPey_sZTUJZyYnCOjuBFUKUYHwjZC6tsBIzy_KisZHzT7wU1tJnLsnXaZCnhqfrZBXVVfA8Lc8HKewYRhUSAakC5tnuXmk3Bt-XmH1jMH_EgxxtQgZ4hych0jNoeD6YT33psNNb5-n-6uhfBQGJSpdJzVlYoWBVrjacBaIvYmEtIIiSkI9B68HVwPxQS-EmrUx9eb2bT3DCBFTj215ZsPvVIADs0o_XSiyLNFnOWH7zPXaiBIplIgzIaOamHrcyI64Vie3BqwY5Q9Mli-ziSUkFmxs6eD5g"
             }
         }
         if (nextProps.socket.connected && !nextProps.socket.authenticated) {
@@ -88,7 +94,7 @@ class UsersContainer extends Component {
                         <h2>Users</h2>
                     </div>
                     <div style={{float:'right',marginTop:'10px'}}>
-                        <input className="usernameSearchInput" onChange={this.handleOnChangeSearchBox} value={this.props.username} type="text" placeholder="Search by username"
+                        <input ref={(input) => { this.textInput = input; }} className="usernameSearchInput" onChange={this.handleOnChangeSearchBox} value={this.props.filter} type="text" placeholder="Search by username"
                                onKeyDown={this.filterUserList}/>
                     </div>
                 </div>
@@ -126,7 +132,6 @@ UsersContainer.contextTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-    console.log(state)
     return {
         users: state.users.receivedList,
         socket: state.socket,

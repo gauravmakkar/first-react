@@ -19,7 +19,6 @@ console.log("wsResponseAction")
     }
 }
 export function setWsAction(params){
-    console.log("CALLED setWsAction")
     return {
         type: params.type,
         data: params.data
