@@ -66,7 +66,12 @@ class UsersContainer extends Component {
     filterUserList(event) {
 
         if (event.keyCode === 13) {
+            if (event.target.value.length < 1) {
+                this.context.router.push("users")
+            } else {
                 this.context.router.push("users?username=" + event.target.value)
+            }
+
 
         }
     }
