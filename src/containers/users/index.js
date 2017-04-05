@@ -8,7 +8,6 @@ import {fetchUserList} from '../../actions/users';
 import {setWsAction} from '../../actions/socket';
 import {WS_CONNECT, WS_ONSEND} from '../../constants/actionConstants';
 import {userSubscriber} from './subscribe'
-import {browserHistory} from 'react-router';
 
 class UsersContainer extends Component {
     constructor(props) {
@@ -38,7 +37,7 @@ class UsersContainer extends Component {
         let authenticationSocketData = {
             'type': 'auth',
             'data': {
-                "auth_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5OTksInVzZXJfbmFtZSI6ImFkbWluIiwic2NvcGUiOlsib3BlbmlkIl0sImV4cCI6MTQ5MTM0NDQ3MywiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiJdLCJqdGkiOiJkNTI2MmQxYi1iOTU3LTRlNWUtOGZkZS05ZmY4MTcyNzc1ZmEiLCJjbGllbnRfaWQiOiJ3bXMifQ.aA5ET1kZkQTA6V-Y4dzTKgodhD6-h7ZaGQKZIMHtB2XXik-UsFe84RpdPey_sZTUJZyYnCOjuBFUKUYHwjZC6tsBIzy_KisZHzT7wU1tJnLsnXaZCnhqfrZBXVVfA8Lc8HKewYRhUSAakC5tnuXmk3Bt-XmH1jMH_EgxxtQgZ4hych0jNoeD6YT33psNNb5-n-6uhfBQGJSpdJzVlYoWBVrjacBaIvYmEtIIiSkI9B68HVwPxQS-EmrUx9eb2bT3DCBFTj215ZsPvVIADs0o_XSiyLNFnOWH7zPXaiBIplIgzIaOamHrcyI64Vie3BqwY5Q9Mli-ziSUkFmxs6eD5g"
+                "auth_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5OTksInVzZXJfbmFtZSI6ImFkbWluIiwic2NvcGUiOlsib3BlbmlkIl0sImV4cCI6MTQ5MTQzNTU5MiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiJdLCJqdGkiOiI2NzNmOTQ3My03YzUxLTQ4ODUtOGNiNy0yZjQxNmQyZmRhM2QiLCJjbGllbnRfaWQiOiJ3bXMifQ.B1JeqyLrJUVqTPlloHiBVp7qq_yvWwEym8s6p2rQyVcr86tNbKLwEleWlpYV6vcrdOnJ8EMd7gZJE9lihuxPV7YPha0jy6LChp4L20Cp_AeBeFuj-HFpfIKYjd5OulpcoaGRYp2zKRIe7UywfQfNve6cMZdLVMF3EsYzd1vZy3QZVIZzsuRGO812mYkhI5v9T_zUaDXhRjEscPSuQW6MnoupxULQq5mmDl55RwtlKD3Fjy-YlzW8Kr_JXkRIeOKAlIoenl2I2lMN4DZ0gajaW6IuhrMRGpwHWWse3LWiCeT4pXFDiS9SmdHeZkxBlHuV0yPPP93K6Jd05znF2__Rwg"
             }
         }
         if (nextProps.socket.connected && !nextProps.socket.authenticated) {
@@ -83,45 +82,45 @@ class UsersContainer extends Component {
     }
 
     handleOnChangeSearchBox(event) {
-        this.setState({username: event.target.value})
+            this.setState({username: event.target.value})
     }
 
     render() {
         return (
-            <div className="settingsContainer">
-                <div className="header">
-                    <div style={{float:'left',clear:'both'}}>
-                        <h2>Users</h2>
-                    </div>
-                    <div style={{float:'right',marginTop:'10px'}}>
-                        <input ref={(input) => { this.textInput = input; }} className="usernameSearchInput" onChange={this.handleOnChangeSearchBox} value={this.props.filter} type="text" placeholder="Search by username"
-                               onKeyDown={this.filterUserList}/>
+            <div className="settingsContainer container-fluid">
+                <div className="row">
+                    <div className="col-12">
+                        <div className="header row" style={{paddingLeft:0,paddingRight:0}}>
+                            <div className="col-md-4 col-md-push-8"><h2>Users</h2></div>
+                            <div className="col-md-8 col-md-pull-4 text-right"><input ref={(input) => { this.textInput = input; }} className="usernameSearchInput" onChange={this.handleOnChangeSearchBox} value={this.props.filter} type="text" placeholder="Search by username"
+                                                                                      onKeyDown={this.filterUserList}/></div>
+
+                        </div>
+
+                        <table style={{width:"100%"}} className="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {this.props.users ? this.props.users.map(function (user, index) {
+                                return ( <tr key={index}>
+                                    <td>{user.user_name}</td>
+                                    <td>{user.first_name}</td>
+                                    <td>{user.last_name}</td>
+                                    <td>{user.role}</td>
+                                </tr>)
+                            }) : <tr>
+                                <td colSpan={'4'}>Loading...</td>
+                            </tr>}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-
-                <table style={{'width': '100%'}}>
-                    <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Role</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {this.props.users ? this.props.users.map(function (user, index) {
-                        return ( <tr key={index}>
-                            <td>{user.user_name}</td>
-                            <td>{user.first_name}</td>
-                            <td>{user.last_name}</td>
-                            <td>{user.role}</td>
-                        </tr>)
-                    }) : <tr>
-                        <td colSpan={'4'}>Loading...</td>
-                    </tr>}
-                    </tbody>
-                </table>
-
             </div>
         );
     }

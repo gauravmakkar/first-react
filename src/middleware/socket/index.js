@@ -50,7 +50,7 @@ const socketMiddleware = (function(){
                 //store.dispatch(actions.connecting());
 
                 //Attempt to connect (we could send a 'failed' action on error)
-                socket = new WebSocket("wss://192.168.8.155/manager_api/wss");
+                socket = new WebSocket("wss://192.168.8.109/manager_api/wss");
                 socket.onmessage = onMessage(socket,store);
                 socket.onclose = onClose(socket,store);
                 socket.onopen = onOpen(socket,store,action.token);
